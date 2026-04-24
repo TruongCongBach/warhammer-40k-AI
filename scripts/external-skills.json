@@ -11,7 +11,7 @@
     {
       "name": "react-devtools",
       "repo": "git@github.com:callstackincubator/agent-react-devtools.git",
-      "subdir": "skills/react-devtools",
+      "subdir": "packages/agent-react-devtools/skills/react-devtools",
       "category": "debug",
       "enabled": true
     },
