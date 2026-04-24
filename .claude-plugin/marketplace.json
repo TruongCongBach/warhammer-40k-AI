@@ -1,0 +1,27 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "imperium-of-man",
+  "description": "Personal Warhammer 40k themed agent-coding marketplace. Ticket-pipeline agents, ticket-* skills, MCP servers, install scripts. Portable across machines.",
+  "owner": {
+    "name": "TruongBach",
+    "url": "https://github.com/TruongBach"
+  },
+  "metadata": {
+    "homepage": "https://github.com/TruongBach/warhammer-40k-AI",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "ultramarines",
+      "description": "Codex Astartes for coding. Ticket-pipeline agents (librarian, inquisitor, techmarine, chapter-master, apothecary, tech-priest), ticket-* skills, /ticket-pipeline orchestrator.",
+      "source": "./plugins/ultramarines",
+      "category": "workflow"
+    },
+    {
+      "name": "adeptus-mechanicus",
+      "description": "Machine cult. MCP server config (jira, newrelic, notebooklm) sourced from environment variables. Disable when offline.",
+      "source": "./plugins/adeptus-mechanicus",
+      "category": "mcp"
+    }
+  ]
+}

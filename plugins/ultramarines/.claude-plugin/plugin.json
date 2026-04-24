@@ -1,0 +1,9 @@
+{
+  "name": "ultramarines",
+  "description": "Codex Astartes for coding. Disciplined ticket-pipeline (analyze -> cause -> fix-plan -> implement -> impact -> test) with themed agents and bundled ticket-* skills.",
+  "version": "0.1.0",
+  "author": {
+    "name": "TruongBach"
+  },
+  "keywords": ["ticket", "jira", "workflow", "pipeline", "warhammer40k"]
+}

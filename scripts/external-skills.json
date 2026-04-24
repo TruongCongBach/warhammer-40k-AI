@@ -1,0 +1,94 @@
+{
+  "_comment": "External (third-party) skills installed by install.sh. Cloned to ~/.agents/skills/<name>, symlinked to ~/.claude/skills/<name>. Update with scripts/update.sh.",
+  "skills": [
+    {
+      "name": "agent-device",
+      "repo": "https://github.com/callstackincubator/agent-device.git",
+      "subdir": "skills/agent-device",
+      "category": "test"
+    },
+    {
+      "name": "agent-browser",
+      "repo": "https://github.com/callstackincubator/agent-browser.git",
+      "subdir": "skills/agent-browser",
+      "category": "test"
+    },
+    {
+      "name": "react-devtools",
+      "repo": "https://github.com/callstackincubator/agent-react-devtools.git",
+      "subdir": "skills/react-devtools",
+      "category": "debug"
+    },
+    {
+      "name": "dogfood",
+      "repo": "https://github.com/callstackincubator/agent-device.git",
+      "subdir": "skills/dogfood",
+      "category": "test"
+    },
+    {
+      "name": "playwright-cli",
+      "repo": "https://github.com/microsoft/playwright.git",
+      "subdir": null,
+      "category": "test",
+      "_note": "Playwright skill source TBD; placeholder. Adjust subdir when repo confirmed."
+    },
+    {
+      "name": "react-doctor",
+      "repo": "https://github.com/anthropics/skills.git",
+      "subdir": "skills/react-doctor",
+      "category": "quality"
+    },
+    {
+      "name": "vercel-react-best-practices",
+      "repo": "https://github.com/vercel-labs/react-best-practices.git",
+      "subdir": null,
+      "category": "knowledge",
+      "_note": "Confirm upstream"
+    },
+    {
+      "name": "remotion-best-practices",
+      "repo": "https://github.com/remotion-dev/remotion.git",
+      "subdir": null,
+      "category": "knowledge",
+      "_note": "Confirm upstream"
+    },
+    {
+      "name": "microsoft-foundry",
+      "repo": "https://github.com/azure-ai-foundry/foundry-samples.git",
+      "subdir": null,
+      "category": "knowledge",
+      "_note": "Confirm subdir"
+    },
+    {
+      "name": "skill-creator",
+      "repo": "https://github.com/anthropics/skills.git",
+      "subdir": "skills/skill-creator",
+      "category": "meta"
+    },
+    {
+      "name": "find-skills",
+      "repo": "https://github.com/anthropics/skills.git",
+      "subdir": "skills/find-skills",
+      "category": "meta"
+    },
+    {
+      "name": "using-superpowers",
+      "repo": "https://github.com/anthropics/skills.git",
+      "subdir": "skills/using-superpowers",
+      "category": "meta"
+    },
+    {
+      "name": "soultrace",
+      "repo": "https://github.com/soultrace/skill.git",
+      "subdir": null,
+      "category": "fun",
+      "_note": "Confirm upstream"
+    },
+    {
+      "name": "template-skill",
+      "repo": "https://github.com/anthropics/skills.git",
+      "subdir": "skills/template-skill",
+      "category": "meta"
+    }
+  ]
+}

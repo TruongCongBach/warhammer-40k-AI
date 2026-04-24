@@ -1,0 +1,9 @@
+{
+  "name": "adeptus-mechanicus",
+  "description": "Machine cult. MCP servers (jira, newrelic, notebooklm) configured via environment variables. No tokens in repo.",
+  "version": "0.1.0",
+  "author": {
+    "name": "TruongBach"
+  },
+  "keywords": ["mcp", "jira", "newrelic", "notebooklm"]
+}

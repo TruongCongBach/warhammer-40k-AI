@@ -1,0 +1,136 @@
+# Imperium of Man
+
+Personal Claude Code marketplace + plugins. Warhammer 40k themed agent-coding setup. Portable across machines: clone repo, run `scripts/install.sh`, fill env vars, ready.
+
+## What's inside
+
+```
+imperium-of-man (marketplace)
+├── ultramarines        # main plugin: ticket-pipeline agents + ticket-* skills + commands
+└── adeptus-mechanicus  # MCP plugin: jira / newrelic / notebooklm (env-driven)
+```
+
+External (third-party) skills like `agent-device`, `playwright-cli`, `react-devtools` are cloned by `install.sh` from upstream repos to `~/.agents/skills/` and symlinked to `~/.claude/skills/`. `update.sh` runs `git pull` on each → upstream updates flow through.
+
+## Install
+
+```bash
+git clone https://github.com/<you>/warhammer-40k-AI.git ~/JmangoProjects/warhammer-40k-AI
+cd ~/JmangoProjects/warhammer-40k-AI
+./scripts/install.sh
+
+# fill tokens
+$EDITOR ~/.config/imperium-of-man/env.sh
+echo '[ -f ~/.config/imperium-of-man/env.sh ] && source ~/.config/imperium-of-man/env.sh' >> ~/.zshrc
+source ~/.zshrc
+
+# verify
+claude
+# inside: /plugin → see ultramarines + adeptus-mechanicus
+```
+
+## Update
+
+```bash
+./scripts/update.sh
+```
+
+Pulls marketplace + each external skill upstream.
+
+## Ticket pipeline (Codex Astartes)
+
+Slash command `/ticket-pipeline <ticket-id>` runs 6 disciplined steps. Each step = 1 themed agent.
+
+| # | Agent | Vai trò | Skill chính |
+|---|-------|---------|-------------|
+| 1 | **librarian** | Đọc & phân tích ticket | `ticket-analysis` |
+| 2 | **inquisitor** | Truy nguyên root cause | `karpathy-guidelines` + `ticket-analysis` |
+| 3 | **techmarine** | Plan fix (1-2 approach + tradeoff) | `ticket-planner` |
+| 4 | **chapter-master** | Execute (write code) | `clean-code-agent` + `karpathy-guidelines` |
+| 5 | **apothecary** | Impact + regression matrix | `ticket-review` |
+| 6 | **tech-priest** | Auto-test (Maestro / agent-device) | `agent-device`, `dogfood`, Maestro |
+
+### Test tool selection (tech-priest)
+
+| Case | Tool |
+|------|------|
+| Multi-step E2E (≥3 step), regression suite | **Maestro** |
+| Single screen verify, exploratory | **agent-device** |
+| Component runtime debug | **react-devtools** |
+
+Auto-fallback: Maestro fail → agent-device manual repro.
+
+## Lore mapping
+
+- **Imperium of Man** = marketplace (đế chế)
+- **Ultramarines** = main coding chapter (Codex Astartes = strict discipline ↔ clean code)
+- **Adeptus Mechanicus** = MCP / external services (machine cult)
+- **Tech-Priest** = automated testing (chants binary canticles to machine spirit)
+- **Apothecary** = regression assessor (medic, knows where the body bleeds)
+- **Inquisitor** = root cause hunter (interrogates code)
+
+Future chapters (when needed):
+- `dark-angels` — security review (sworn secret hunters)
+- `space-wolves` — exploratory dogfood (wild)
+- `grey-knights` — auth/permission specialist
+- `imperial-fists` — defensive testing fortress
+- `salamanders` — UI/design review (artisans)
+- `iron-hands` — refactor / perf optimization
+
+## Self-written vs upstream
+
+| Type | Where | Updated by |
+|------|-------|-----------|
+| Self-written skills (ticket-*, clean-code-agent, karpathy-guidelines) | `plugins/ultramarines/skills/` (bundled) | edit in this repo |
+| Self-written agents (librarian, inquisitor, ...) | `plugins/ultramarines/agents/` | edit in this repo |
+| External skills (agent-device, playwright-cli, ...) | `~/.agents/skills/<name>` (cloned upstream) | `scripts/update.sh` |
+
+## MCP servers (adeptus-mechanicus)
+
+| Server | Type | Env vars needed |
+|--------|------|-----------------|
+| `jira` | stdio | `ATLASSIAN_SITE_NAME`, `ATLASSIAN_USER_EMAIL`, `ATLASSIAN_API_TOKEN` |
+| `notebooklm` | stdio | none (browser auth: `npx notebooklm-mcp@latest setup`) |
+| `newrelic` | http | `NEW_RELIC_API_KEY` |
+
+Tokens NEVER committed. See `.env.example`.
+
+## Layout
+
+```
+warhammer-40k-AI/
+├── .claude-plugin/marketplace.json
+├── plugins/
+│   ├── ultramarines/
+│   │   ├── .claude-plugin/plugin.json
+│   │   ├── agents/         # 6 themed + ticket-analyzer + mobile-issue-reproducer
+│   │   ├── skills/         # ticket-* + clean-code-agent + karpathy-guidelines
+│   │   ├── commands/       # /ticket-pipeline
+│   │   ├── docs/           # security/ + design/ checklists referenced by skills
+│   │   └── scripts/        # extract_design_context.py
+│   └── adeptus-mechanicus/
+│       ├── .claude-plugin/plugin.json
+│       └── .mcp.json
+├── scripts/
+│   ├── install.sh
+│   ├── update.sh
+│   └── external-skills.json
+├── .env.example
+├── .gitignore
+└── README.md
+```
+
+## Adding a new themed agent
+
+1. Drop `<chapter-name>.md` in `plugins/ultramarines/agents/` with frontmatter `name`, `description`, `model`, optional `memory: project`.
+2. Add lore mapping note here.
+3. Optionally add to `/ticket-pipeline` if it's a pipeline step.
+
+## Adding a new external skill
+
+1. Add entry to `scripts/external-skills.json` (`name`, `repo`, `subdir` optional).
+2. Run `./scripts/install.sh` again — idempotent, only clones missing.
+
+---
+
+For the Emperor.
