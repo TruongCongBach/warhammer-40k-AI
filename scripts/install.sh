@@ -3,6 +3,11 @@
 # Run on a fresh machine to set up: marketplace, plugins, external skills, MCP env, Maestro.
 set -euo pipefail
 
+# Never prompt for git credentials — fail fast on private/missing repos.
+export GIT_TERMINAL_PROMPT=0
+export GIT_ASKPASS=/bin/echo
+export SSH_ASKPASS=/bin/echo
+
 REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 AGENTS_DIR="${HOME}/.agents/skills"
 CLAUDE_SKILLS="${HOME}/.claude/skills"
@@ -39,14 +44,24 @@ jq -c '.skills[]' "${SKILLS_JSON}" | while read -r entry; do
   name=$(echo "$entry" | jq -r '.name')
   repo=$(echo "$entry" | jq -r '.repo')
   subdir=$(echo "$entry" | jq -r '.subdir // empty')
+  enabled=$(echo "$entry" | jq -r '.enabled // true')
   target="${AGENTS_DIR}/${name}"
+
+  if [ "${enabled}" != "true" ]; then
+    warn "${name} disabled in external-skills.json — skip"
+    continue
+  fi
 
   if [ -d "${target}/.git" ] || [ -d "${target}" ]; then
     warn "${name} already exists at ${target} — skip clone"
   else
     if [ -n "${subdir}" ]; then
       tmpdir=$(mktemp -d)
-      git clone --depth 1 "${repo}" "${tmpdir}/repo" >/dev/null 2>&1 || { err "clone fail: ${repo}"; rm -rf "${tmpdir}"; continue; }
+      if ! git clone --depth 1 "${repo}" "${tmpdir}/repo" >/dev/null 2>&1; then
+        err "clone fail: ${repo} — skip ${name}"
+        rm -rf "${tmpdir}"
+        continue
+      fi
       if [ -d "${tmpdir}/repo/${subdir}" ]; then
         mv "${tmpdir}/repo/${subdir}" "${target}"
         # keep .git pointer for updates: re-clone full so update.sh can git pull
@@ -60,13 +75,13 @@ jq -c '.skills[]' "${SKILLS_JSON}" | while read -r entry; do
       fi
       rm -rf "${tmpdir}"
     else
-      git clone --depth 1 "${repo}" "${target}" >/dev/null 2>&1 && ok "${name}" || err "clone fail: ${repo}"
+      git clone --depth 1 "${repo}" "${target}" >/dev/null 2>&1 && ok "${name}" || { err "clone fail: ${repo}"; continue; }
     fi
   fi
 
-  # Symlink to ~/.claude/skills
+  # Symlink to ~/.claude/skills (only if target exists)
   link="${CLAUDE_SKILLS}/${name}"
-  if [ ! -e "${link}" ]; then
+  if [ -d "${target}" ] && [ ! -e "${link}" ]; then
     ln -s "${target}" "${link}" && ok "  linked → ~/.claude/skills/${name}"
   fi
 done

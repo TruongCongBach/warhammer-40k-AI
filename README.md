@@ -10,7 +10,9 @@ imperium-of-man (marketplace)
 └── adeptus-mechanicus  # MCP plugin: jira / newrelic / notebooklm (env-driven)
 ```
 
-External (third-party) skills like `agent-device`, `playwright-cli`, `react-devtools` are cloned by `install.sh` from upstream repos to `~/.agents/skills/` and symlinked to `~/.claude/skills/`. `update.sh` runs `git pull` on each → upstream updates flow through.
+**External skills** with confirmed upstream (currently `agent-device`, `agent-react-devtools`, `agent-browser`) are cloned by `install.sh` over **SSH** to `~/.agents/skills/` and symlinked to `~/.claude/skills/`. `update.sh` runs `git pull` on each → upstream updates flow through. SSH key required (`ssh -T git@github.com` to verify).
+
+**Bundled skills** (everything else: `dogfood`, `react-doctor`, `vercel-react-best-practices`, `microsoft-foundry`, `skill-creator`, etc.) ship inside `plugins/ultramarines/skills/` — loaded automatically when the plugin is enabled, no clone needed. Update by editing in this repo + git push.
 
 ## Install
 
