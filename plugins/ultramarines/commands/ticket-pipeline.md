@@ -8,6 +8,8 @@ allowed-tools: ["Agent", "Read", "Bash", "Edit", "Write", "Grep"]
 
 Orchestrate full ticket pipeline (Codex Astartes — 6 disciplined steps).
 
+> **Doctrine reference**: every agent in this pipeline is bound by `plugins/ultramarines/CODEX_ASTARTES.md` (Universal Tenets + per-agent Oath + hand-off contract + stop-points). Read it once before tweaking pipeline behavior. Stop-points listed here are mirrored in the Codex.
+
 ## Input
 
 `$ARGUMENTS` — Jira ticket ID (e.g. `MWL-123`) or pasted ticket text/bug report.

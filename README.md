@@ -1,14 +1,19 @@
-# Imperium of Man
+# Imperium of Guilliman
 
-Personal Claude Code marketplace + plugins. Warhammer 40k themed agent-coding setup. Portable across machines: clone repo, run `scripts/install.sh`, fill env vars, ready.
+Personal Claude Code marketplace + plugins. Warhammer 40k themed agent-coding setup, bound by the **Codex Astartes** — every agent obeys the same doctrine before its own oath. Portable across machines: clone repo, run `scripts/install.sh`, fill env vars, ready.
+
+> Named for **Roboute Guilliman**, Primarch of the Ultramarines and author of the Codex Astartes — the strict doctrine that turned warfare into discipline. Same idea here: turn agent-coding into discipline.
 
 ## What's inside
 
 ```
-imperium-of-man (marketplace)
+imperium-of-guilliman (marketplace)
 ├── ultramarines        # main plugin: ticket-pipeline agents + ticket-* skills + commands
+│                       #   bound by plugins/ultramarines/CODEX_ASTARTES.md
 └── adeptus-mechanicus  # MCP plugin: jira / newrelic / notebooklm (env-driven)
 ```
+
+**Codex Astartes** = `plugins/ultramarines/CODEX_ASTARTES.md`. Universal tenets all agents follow + per-agent oaths + pipeline hand-off contract + stop-points. Read it before tweaking any agent.
 
 **External skills** with confirmed upstream (currently `agent-device`, `agent-react-devtools`, `agent-browser`) are cloned by `install.sh` over **SSH** to `~/.agents/skills/` and symlinked to `~/.claude/skills/`. `update.sh` runs `git pull` on each → upstream updates flow through. SSH key required (`ssh -T git@github.com` to verify).
 
@@ -22,8 +27,8 @@ cd ~/JmangoProjects/warhammer-40k-AI
 ./scripts/install.sh
 
 # fill tokens
-$EDITOR ~/.config/imperium-of-man/env.sh
-echo '[ -f ~/.config/imperium-of-man/env.sh ] && source ~/.config/imperium-of-man/env.sh' >> ~/.zshrc
+$EDITOR ~/.config/imperium-of-guilliman/env.sh
+echo '[ -f ~/.config/imperium-of-guilliman/env.sh ] && source ~/.config/imperium-of-guilliman/env.sh' >> ~/.zshrc
 source ~/.zshrc
 
 # verify
@@ -64,7 +69,7 @@ Auto-fallback: Maestro fail → agent-device manual repro.
 
 ## Lore mapping
 
-- **Imperium of Man** = marketplace (đế chế)
+- **Imperium of Guilliman** = marketplace (đế chế under Codex)
 - **Ultramarines** = main coding chapter (Codex Astartes = strict discipline ↔ clean code)
 - **Adeptus Mechanicus** = MCP / external services (machine cult)
 - **Tech-Priest** = automated testing (chants binary canticles to machine spirit)

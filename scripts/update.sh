@@ -30,7 +30,7 @@ done
 
 bold "==> Updating Claude plugins"
 if command -v claude >/dev/null; then
-  claude plugin marketplace update imperium-of-man 2>/dev/null && ok "marketplace metadata refreshed"
+  claude plugin marketplace update imperium-of-guilliman 2>/dev/null && ok "marketplace metadata refreshed"
 fi
 
 bold "==> Done."

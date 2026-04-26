@@ -1,7 +1,7 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
-  "name": "imperium-of-man",
-  "description": "Personal Warhammer 40k themed agent-coding marketplace. Ticket-pipeline agents, ticket-* skills, MCP servers, install scripts. Portable across machines.",
+  "name": "imperium-of-guilliman",
+  "description": "Imperium of Guilliman — personal Warhammer 40k themed agent-coding marketplace bound by the Codex Astartes. Ticket-pipeline agents, ticket-* skills, MCP servers, install scripts. Portable across machines.",
   "owner": {
     "name": "TruongBach",
     "url": "https://github.com/TruongBach"

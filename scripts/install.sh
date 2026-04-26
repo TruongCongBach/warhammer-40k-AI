@@ -11,7 +11,7 @@ export SSH_ASKPASS=/bin/echo
 REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 AGENTS_DIR="${HOME}/.agents/skills"
 CLAUDE_SKILLS="${HOME}/.claude/skills"
-ENV_FILE="${HOME}/.config/imperium-of-man/env.sh"
+ENV_FILE="${HOME}/.config/imperium-of-guilliman/env.sh"
 
 bold() { printf "\033[1m%s\033[0m\n" "$*"; }
 ok()   { printf "  \033[32m✓\033[0m %s\n" "$*"; }
@@ -29,8 +29,8 @@ command -v jq >/dev/null       || { err "jq missing — brew install jq"; exit 1
 bold "==> Registering marketplace + enabling plugins"
 if command -v claude >/dev/null; then
   claude plugin marketplace add "${REPO_ROOT}" 2>/dev/null && ok "marketplace added" || warn "marketplace already added"
-  claude plugin install ultramarines@imperium-of-man 2>/dev/null && ok "ultramarines installed" || warn "ultramarines already installed"
-  claude plugin install adeptus-mechanicus@imperium-of-man 2>/dev/null && ok "adeptus-mechanicus installed" || warn "adeptus-mechanicus already installed"
+  claude plugin install ultramarines@imperium-of-guilliman 2>/dev/null && ok "ultramarines installed" || warn "ultramarines already installed"
+  claude plugin install adeptus-mechanicus@imperium-of-guilliman 2>/dev/null && ok "adeptus-mechanicus installed" || warn "adeptus-mechanicus already installed"
 else
   warn "skip — claude CLI not present"
 fi
@@ -99,7 +99,7 @@ fi
 # Suggest shell rc inclusion
 SHELL_RC="${HOME}/.zshrc"
 [ -n "${BASH_VERSION:-}" ] && SHELL_RC="${HOME}/.bashrc"
-if ! grep -q "imperium-of-man/env.sh" "${SHELL_RC}" 2>/dev/null; then
+if ! grep -q "imperium-of-guilliman/env.sh" "${SHELL_RC}" 2>/dev/null; then
   warn "add this to ${SHELL_RC}:"
   echo "    [ -f ${ENV_FILE} ] && source ${ENV_FILE}"
 fi
