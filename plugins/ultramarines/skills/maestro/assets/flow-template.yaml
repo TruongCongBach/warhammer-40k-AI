@@ -1,0 +1,47 @@
+# Annotated Maestro flow template.
+# Copy to .maestro/flows/{feature}-{action}.yaml and adapt.
+appId: com.example.app
+tags:
+  - ci
+  - smoke
+env:
+  USERNAME: test@example.com
+---
+# 1. Cold-boot launch with clean state
+- launchApp:
+    clearState: true
+    clearKeychain: true   # iOS only — strips Keychain so prior session does not leak
+
+# 2. iOS XCTest cold-boot stabilizer (no-op on Android)
+- swipe:
+    from: { x: 50%, y: 50% }
+    to: { x: 50%, y: 45% }
+
+# 3. Adaptive auth — only run subflow if login screen actually showed
+- runFlow:
+    when:
+      visible: "Sign in"
+    file: ../subflows/auth.yaml
+
+# 4. Wait for authed surface marker (zero-size testID rendered after data hydrate)
+- extendedWaitUntil:
+    visible:
+      id: "auth-loaded"
+    timeout: 8000
+
+# 5. Action under test
+- tapOn:
+    id: "checkout-cta"
+
+# 6. Permission dialog — optional so flow does not break if not shown
+- tapOn:
+    text: "Allow"
+    optional: true
+
+# 7. Optimistic UI — server roundtrip, bump timeout
+- assertVisible:
+    id: "order-confirmation"
+    timeout: 5000
+
+# 8. Checkpoint screenshot
+- takeScreenshot: artifacts/checkout-confirmed

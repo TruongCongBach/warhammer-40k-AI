@@ -13,7 +13,7 @@
   "plugins": [
     {
       "name": "ultramarines",
-      "description": "Codex Astartes for coding. Ticket-pipeline agents (librarian, inquisitor, techmarine, chapter-master, apothecary, tech-priest), ticket-* skills, /ticket-pipeline orchestrator.",
+      "description": "Codex Astartes for coding. Ticket-pipeline agents (librarian, inquisitor, techmarine, chapter-master, apothecary, tech-priest), ticket-* skills, mobile testing (maestro, dogfood, agent-device), /ticket-pipeline orchestrator.",
       "source": "./plugins/ultramarines",
       "category": "workflow"
     },

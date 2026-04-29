@@ -1,0 +1,37 @@
+# Adaptive auth subflow.
+# Caller invokes via:
+#   - runFlow:
+#       file: ../subflows/auth.yaml
+#       when:
+#         visible: "Sign in"
+appId: com.example.app
+---
+- tapOn:
+    id: "email-input"
+- inputText: ${USERNAME}
+
+- tapOn:
+    id: "password-input"
+- inputText: ${PASSWORD}
+
+- tapOn:
+    id: "sign-in-submit"
+
+# Branch: OTP step may or may not appear depending on user/feature flag
+- runFlow:
+    when:
+      visible:
+        id: "otp-input"
+    commands:
+      - runScript: ../scripts/fetch-otp.js
+      - tapOn:
+          id: "otp-input"
+      - inputText: ${output.otp}
+      - tapOn:
+          id: "otp-submit"
+
+# Wait for authed marker
+- extendedWaitUntil:
+    visible:
+      id: "auth-loaded"
+    timeout: 10000
