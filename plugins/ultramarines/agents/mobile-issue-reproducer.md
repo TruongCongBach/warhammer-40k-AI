@@ -85,7 +85,19 @@ Assume both are available via their documented CLI/MCP surfaces. If a tool invoc
    ## Suggested next steps for the developer
    - Targeted files/hooks to inspect
    - Additional data to collect if hypothesis needs confirmation
+
+   ## Lock as regression (recommended when REPRODUCED)
+   - Hand off to skill `maestro` to author a YAML flow that reproduces this bug deterministically.
+   - Suggested path: `.maestro/flows/<feature>-<bug-id>.yaml`, tag `regression`.
+   - Cite `[via skill: maestro]` when authoring; use `assets/flow-template.yaml` as starting point.
+   - This converts a one-off `agent-device` repro into a permanent regression guard runnable in CI.
    ```
+
+## Skill citations (Tenet 7)
+
+- Drive device → cite `[via skill: agent-device]`
+- Inspect React → cite `[via skill: react-devtools]`
+- Lock regression as Maestro flow → invoke skill `maestro`, cite `[via skill: maestro]`
 
 ## Operating principles
 

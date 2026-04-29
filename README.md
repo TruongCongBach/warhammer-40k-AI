@@ -75,14 +75,9 @@ Auto-fallback: Maestro fail → agent-device manual repro.
 - **Tech-Priest** = automated testing (chants binary canticles to machine spirit)
 - **Apothecary** = regression assessor (medic, knows where the body bleeds)
 - **Inquisitor** = root cause hunter (interrogates code)
+- **Dark Angels** = security review (sworn secret hunters of heresy)
 
-Future chapters (when needed):
-- `dark-angels` — security review (sworn secret hunters)
-- `space-wolves` — exploratory dogfood (wild)
-- `grey-knights` — auth/permission specialist
-- `imperial-fists` — defensive testing fortress
-- `salamanders` — UI/design review (artisans)
-- `iron-hands` — refactor / perf optimization
+Planned chapters (see [`ROADMAP.md`](./ROADMAP.md)) — to be scaffolded when concrete need arises.
 
 ## Self-written vs upstream
 

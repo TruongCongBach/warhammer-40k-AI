@@ -7,3 +7,6 @@ node_modules/
 __pycache__/
 *.pyc
 .venv/
+
+# Pipeline run state — local artifacts, never commit
+.imperium/

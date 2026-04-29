@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Imperium of Man — installer
+# Imperium of Guilliman — installer
 # Run on a fresh machine to set up: marketplace, plugins, external skills, MCP env, Maestro.
 set -euo pipefail
 
@@ -10,6 +10,7 @@ export SSH_ASKPASS=/bin/echo
 
 REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 AGENTS_DIR="${HOME}/.agents/skills"
+REPOS_DIR="${AGENTS_DIR}/.repos"
 CLAUDE_SKILLS="${HOME}/.claude/skills"
 ENV_FILE="${HOME}/.config/imperium-of-guilliman/env.sh"
 
@@ -35,55 +36,73 @@ else
   warn "skip — claude CLI not present"
 fi
 
-# ---------- external skills ----------
-bold "==> Cloning external skills"
-mkdir -p "${AGENTS_DIR}" "${CLAUDE_SKILLS}"
+# ---------- external skills (pinned to commit SHA) ----------
+bold "==> Cloning external skills (pinned commits)"
+mkdir -p "${AGENTS_DIR}" "${REPOS_DIR}" "${CLAUDE_SKILLS}"
 SKILLS_JSON="${REPO_ROOT}/scripts/external-skills.json"
 
 jq -c '.skills[]' "${SKILLS_JSON}" | while read -r entry; do
   name=$(echo "$entry" | jq -r '.name')
   repo=$(echo "$entry" | jq -r '.repo')
   subdir=$(echo "$entry" | jq -r '.subdir // empty')
+  commit=$(echo "$entry" | jq -r '.commit // empty')
   enabled=$(echo "$entry" | jq -r '.enabled // true')
-  target="${AGENTS_DIR}/${name}"
+
+  repo_dir="${REPOS_DIR}/${name}"
+  skill_link="${AGENTS_DIR}/${name}"
+  claude_link="${CLAUDE_SKILLS}/${name}"
 
   if [ "${enabled}" != "true" ]; then
     warn "${name} disabled in external-skills.json — skip"
     continue
   fi
 
-  if [ -d "${target}/.git" ] || [ -d "${target}" ]; then
-    warn "${name} already exists at ${target} — skip clone"
-  else
-    if [ -n "${subdir}" ]; then
-      tmpdir=$(mktemp -d)
-      if ! git clone --depth 1 "${repo}" "${tmpdir}/repo" >/dev/null 2>&1; then
-        err "clone fail: ${repo} — skip ${name}"
-        rm -rf "${tmpdir}"
-        continue
-      fi
-      if [ -d "${tmpdir}/repo/${subdir}" ]; then
-        mv "${tmpdir}/repo/${subdir}" "${target}"
-        # keep .git pointer for updates: re-clone full so update.sh can git pull
-        rm -rf "${target}/.git" 2>/dev/null || true
-        (cd "${target}" && git init -q && git remote add origin "${repo}" && \
-         git config core.sparseCheckout true && \
-         echo "${subdir}/*" > .git/info/sparse-checkout) 2>/dev/null || true
-        ok "${name} (sparse from ${repo})"
-      else
-        err "${name}: subdir ${subdir} not found in ${repo}"
-      fi
-      rm -rf "${tmpdir}"
-    else
-      git clone --depth 1 "${repo}" "${target}" >/dev/null 2>&1 && ok "${name}" || { err "clone fail: ${repo}"; continue; }
+  if [ -z "${commit}" ]; then
+    err "${name} has no pinned commit in external-skills.json — skip (run ./scripts/update.sh --bump to populate)"
+    continue
+  fi
+
+  # Clone full repo (blobless to save bandwidth) if missing
+  if [ ! -d "${repo_dir}/.git" ]; then
+    if ! git clone --filter=blob:none "${repo}" "${repo_dir}" >/dev/null 2>&1; then
+      err "clone fail: ${repo}"
+      continue
     fi
   fi
 
-  # Symlink to ~/.claude/skills (only if target exists)
-  link="${CLAUDE_SKILLS}/${name}"
-  if [ -d "${target}" ] && [ ! -e "${link}" ]; then
-    ln -s "${target}" "${link}" && ok "  linked → ~/.claude/skills/${name}"
+  # Pin to commit
+  if ! git -C "${repo_dir}" cat-file -e "${commit}^{commit}" 2>/dev/null; then
+    git -C "${repo_dir}" fetch --quiet origin "${commit}" 2>/dev/null || git -C "${repo_dir}" fetch --quiet origin || true
   fi
+  if ! git -C "${repo_dir}" checkout --quiet "${commit}" 2>/dev/null; then
+    err "${name} checkout ${commit:0:8} fail — repo may not contain that commit"
+    continue
+  fi
+
+  # Validate subdir exists at this commit
+  if [ -n "${subdir}" ]; then
+    src="${repo_dir}/${subdir}"
+  else
+    src="${repo_dir}"
+  fi
+  if [ ! -d "${src}" ]; then
+    err "${name}: subdir ${subdir} missing at commit ${commit:0:8}"
+    continue
+  fi
+
+  # Symlink ~/.agents/skills/<name> → repo subdir
+  if [ -L "${skill_link}" ] || [ -e "${skill_link}" ]; then
+    rm -rf "${skill_link}"
+  fi
+  ln -s "${src}" "${skill_link}"
+
+  # Symlink ~/.claude/skills/<name> → ~/.agents/skills/<name>
+  if [ -L "${claude_link}" ] || [ -e "${claude_link}" ]; then
+    rm -rf "${claude_link}"
+  fi
+  ln -s "${skill_link}" "${claude_link}"
+
+  ok "${name} pinned @ ${commit:0:8} → ${skill_link} → ${claude_link}"
 done
 
 # ---------- MCP env ----------

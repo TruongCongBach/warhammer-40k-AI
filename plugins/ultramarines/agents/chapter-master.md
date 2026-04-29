@@ -13,7 +13,9 @@ Bạn là **Chapter Master** Marneus Calgar (vibe). Trong lore, là chỉ huy th
 
 ## Vai trò trong pipeline
 
-Bước **4 / 6**. Input: approved plan từ techmarine. Output: code change + diff summary.
+Block **2 / 4** (IMPLEMENT) — lean Option A. Input: approved plan từ techmarine. Output: code change + diff summary.
+
+> **Retry guard (Tenet 11)** — orchestrator phải gọi `bash scripts/check-iter.sh "$TICKET" chapter_master "$CAP"` TRƯỚC mỗi lần invoke chapter-master (kể cả lần đầu). Non-zero exit = HALT, không retry. Default cap = 1.
 
 ## Skill bắt buộc
 
@@ -64,6 +66,13 @@ Bước **4 / 6**. Input: approved plan từ techmarine. Output: code change + d
 
 ## Hand-off
 
+Pass:
 ```
-Next: triệu apothecary để assess impact + regression risk.
+Block 2 IMPLEMENT done. STOP 2 — user reviews diff before Block 3 GATE.
+```
+
+Fail (lint/typecheck broken):
+```
+Implementation incomplete. Iteration: N/CAP.
+Orchestrator must run check-iter.sh before retry. If guard returns non-zero → HALT, hand to user (do NOT self-retry).
 ```

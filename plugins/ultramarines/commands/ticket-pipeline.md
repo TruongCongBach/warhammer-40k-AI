@@ -1,67 +1,164 @@
 ---
-description: "Run full ticket pipeline: librarian → inquisitor → techmarine → chapter-master → apothecary → tech-priest. Pass ticket-id or ticket text as arg."
-argument-hint: "[ticket-id or text]"
+description: "Lean ticket pipeline — 4 blocks with explicit user stop-points: ANALYZE → IMPLEMENT → GATE → TEST. Commit + PR stay manual. Retry guarded by scripts/check-iter.sh (cap 1)."
+argument-hint: "[ticket-id or text] [--skip=cause,security,test] [--cap=N]"
 allowed-tools: ["Agent", "Read", "Bash", "Edit", "Write", "Grep"]
 ---
 
-# /ticket-pipeline
+# /ticket-pipeline (lean Option A)
 
-Orchestrate full ticket pipeline (Codex Astartes — 6 disciplined steps).
+Orchestrate ticket through 4 disciplined blocks. **Auto inside a block, STOP between blocks.** Retry capped by hard guard, not honor system.
 
-> **Doctrine reference**: every agent in this pipeline is bound by `plugins/ultramarines/CODEX_ASTARTES.md` (Universal Tenets + per-agent Oath + hand-off contract + stop-points). Read it once before tweaking pipeline behavior. Stop-points listed here are mirrored in the Codex.
+> **Doctrine**: every agent is bound by `plugins/ultramarines/CODEX_ASTARTES.md` (Universal Tenets I + Tenet 11 retry-guard). Read once before tweaking pipeline behavior.
+
+> **Manual gate**: pipeline ends at TEST. **Commit** and **PR** stay manual — invoke skill `ticket-commit` and `gh pr create` yourself. Pipeline NEVER auto-commits, NEVER auto-pushes, NEVER auto-opens PR.
 
 ## Input
 
-`$ARGUMENTS` — Jira ticket ID (e.g. `MWL-123`) or pasted ticket text/bug report.
+`$ARGUMENTS`:
+- ticket-id (`MWL-123`) or pasted ticket text
+- `--skip=cause,security,test` (optional)
+- `--cap=N` (optional, default `1` — retry cap per step)
 
-## Steps
+## State file
 
-Run **sequentially**. Each step depends on previous output.
+Pipeline writes to `.imperium/runs/<ticket-id>/state.json`. Local-only (gitignored). Retry guard reads + bumps counters there.
 
-### 1. Librarian — Analyze
-Invoke agent `librarian` with the ticket. Wait for structured analysis (summary, requirements, ambiguities, readiness).
+To inspect / reset:
+```bash
+bash scripts/check-iter.sh --show <ticket-id>
+bash scripts/check-iter.sh --reset <ticket-id>
+```
 
-**Stop if** readiness = `needs-clarification`. Ask user before continuing.
+---
 
-### 2. Inquisitor — Root cause
-Only for **bug**/regression tickets. Skip for pure feature.
-Invoke agent `inquisitor` with librarian's output. Wait for root cause + confidence.
+## Block 1 — ANALYZE (auto)
 
-**Stop if** confidence = `low` and no clear next step. Ask user.
+**Agents:** `librarian` → `inquisitor` (skip inquisitor if pure feature, or `--skip=cause`).
 
-### 3. Techmarine — Plan
-Invoke agent `techmarine` with prior outputs. Get 1-2 approaches + recommendation.
+1. Invoke `librarian` with ticket. Wait for analysis (summary, requirements, ambiguities, readiness).
+2. **Internal stop** — if librarian readiness = `needs-clarification`, halt + ask user.
+3. Invoke `inquisitor` with librarian's output (bug only). Wait for root cause + confidence.
+4. **Internal stop** — if inquisitor confidence = `low` and no clear next step, halt + ask user.
 
-**Stop and ask user** which approach to execute. Default to recommended.
+### → STOP 1: Approve approach
 
-### 4. Chapter-Master — Implement
-Invoke agent `chapter-master` with approved approach. Edit code.
+Then invoke `techmarine` for plan (1-2 approaches + recommendation).
 
-**Stop if** lint/typecheck fails. Hand back self-fix loop max 2 times, then ask user.
+**Halt and prompt user:**
+```
+Block 1 done. Techmarine proposed:
+  Approach A — [...]
+  Approach B — [...]
+  Recommended: A
 
-### 5. Apothecary — Impact
-Invoke agent `apothecary` with diff. Get blast radius + regression matrix + rollback plan.
+Approve which? (A/B/modify/abort)
+```
 
-### 6. Tech-Priest — Test
-Invoke agent `tech-priest` with apothecary's risk matrix. Tool auto-chosen (Maestro vs agent-device).
+User reply gates Block 2.
 
-**Loop back** to chapter-master if test fail (max 2 iterations).
+---
 
-## Final Output
+## Block 2 — IMPLEMENT (auto, retry cap 1)
 
-After all 6 steps, summarize:
+**Agent:** `chapter-master`.
+
+**Retry guard (mandatory per Tenet 11):**
+```bash
+bash scripts/check-iter.sh "$TICKET" chapter_master "$CAP"
+```
+Run BEFORE every chapter-master invocation (including first). Paste guard output in response. Non-zero exit → HALT, hand to user. Do NOT skip the guard call.
+
+1. Run guard.
+2. Invoke `chapter-master` with approved approach. Edits code.
+3. If lint/typecheck fails → run guard again, retry once. If guard exits 1 → halt.
+
+### → STOP 2: Diff review
+
+**Halt and prompt user:**
+```
+Block 2 done.
+Files changed: [list]
+Diff: run `git diff` to review.
+
+Continue to security gate? (yes/abort/modify)
+```
+
+User reply gates Block 3.
+
+---
+
+## Block 3 — GATE (auto, no retry)
+
+**Agents:** `apothecary` → `dark-angels`. Skippable via `--skip=security` (apothecary still runs).
+
+1. Invoke `apothecary` with diff. Get blast radius + regression matrix + rollback plan.
+2. Invoke `dark-angels` with diff + apothecary output. Get severity-classified findings + recommendation (`clean` / `needs-fix-before-test` / `HALT-pipeline`).
+
+**Hard halt** — if dark-angels reports `HALT-pipeline` (any critical/high finding):
+- State HALT explicitly with `file:line` + remediation.
+- Hand back to user. Do NOT proceed to test.
+- User must fix manually then re-run pipeline (or fix + re-invoke chapter-master + dark-angels).
+
+### → STOP 3: Confirm before test
+
+**Halt and prompt user:**
+```
+Block 3 done.
+Apothecary risk: [low/med/high]
+Dark-angels: [clean / N findings — list severity]
+
+Continue to test? (yes/abort)
+```
+
+If dark-angels = clean and apothecary risk = low, user can pre-approve via `--auto-test` (future flag). Default = stop.
+
+---
+
+## Block 4 — TEST (auto, retry cap 1)
+
+**Agent:** `tech-priest`.
+
+**Precondition:** dark-angels result must be `clean`. If `needs-fix-before-test`, do NOT enter Block 4.
+
+**Retry guard (mandatory per Tenet 11):**
+```bash
+bash scripts/check-iter.sh "$TICKET" tech_priest "$CAP"
+```
+Run BEFORE every tech-priest invocation. Paste guard output. Non-zero exit → HALT.
+
+1. Run guard.
+2. Invoke `tech-priest`. Tool auto-chosen per doctrine (Maestro for ≥3-step E2E via skill `maestro`, agent-device for ≤2-step / exploratory).
+3. If test fail → run guard, retry once with hand-back to chapter-master. If guard exits 1 → halt + hand to user.
+
+### → STOP 4: Pipeline end (manual hand-off)
+
+Pipeline complete. **Do NOT commit, do NOT push, do NOT open PR.**
+
+```
+✅ Pipeline done. Manual next steps (none auto-run):
+
+  1. `git diff` to re-review final state
+  2. Skill `ticket-commit` to commit (when user OK)
+  3. Skill `ticket-summary` to write QA note
+  4. `gh pr create` thủ công
+  5. Skill `ticket-close` to close ticket
+
+State file: .imperium/runs/<ticket-id>/state.json (kept for resume)
+```
+
+---
+
+## Final summary table
 
 ```
 ## Pipeline Result: [ticket-id]
 
-| Step | Agent | Status |
-|---|---|---|
-| 1 Analyze | librarian | done |
-| 2 Cause | inquisitor | done / skipped |
-| 3 Plan | techmarine | approach A |
-| 4 Implement | chapter-master | done |
-| 5 Impact | apothecary | risk: low/med/high |
-| 6 Test | tech-priest | pass/fail |
+| Block | Agents | Status | Iter |
+|---|---|---|---|
+| 1 ANALYZE   | librarian → inquisitor → techmarine | done | — |
+| 2 IMPLEMENT | chapter-master                       | done | N/CAP |
+| 3 GATE      | apothecary → dark-angels             | clean / N findings | — |
+| 4 TEST      | tech-priest                          | pass/fail | N/CAP |
 
 ### Files changed
 [list]
@@ -69,18 +166,24 @@ After all 6 steps, summarize:
 ### Test evidence
 [paths]
 
-### Next
-- /ticket-commit để commit
-- skill ticket-summary để viết QA note
-- skill ticket-close để close ticket
+### Security findings
+[count by severity, or "clean"]
+
+### Next (user-action, NOT auto)
+- Review diff
+- Skill ticket-commit
+- gh pr create
+- Skill ticket-close
 ```
 
 ## User control
 
-User có thể skip step bằng `/ticket-pipeline [ticket] --skip=cause,test` (parse `--skip=` từ args).
-
-User có thể dừng giữa chừng bằng cách reply trong stop point.
+- **Skip step:** `--skip=cause,security,test` (valid keys: `cause`, `security`, `test`)
+- **Bump cap:** `--cap=2` (default 1) — only when expected legitimate retry need
+- **Stop midway:** reply at any STOP point with `abort`
+- **Force past dark-angels HALT:** requires explicit `confirm-override` reply in same turn (Tenet 3 — risky-op confirmation)
+- **Reset state:** `bash scripts/check-iter.sh --reset <ticket-id>` then re-run pipeline
 
 ## Language
 
-Match user language (Việt/Anh).
+Per Codex Tenet 5 — bilingual: primary = user language (Việt), secondary = English. Code stays English.

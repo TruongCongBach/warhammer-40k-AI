@@ -32,10 +32,13 @@ These rules apply to **every** agent regardless of role. Violating them is heres
 - Always include: ticket-id, decision, evidence, confidence, next-step recommendation, what to skip.
 - Never silently mutate prior agent's output. If you disagree, say so explicitly with reason.
 
-### Tenet 5 — Language match
-- Reply in the user's language (Vietnamese / English). Mixed code/comment OK.
-- Code identifiers stay English. Commit messages stay English (Conventional Commits).
-- User-facing prose follows user.
+### Tenet 5 — Language match (bilingual response)
+- **Code stays English** — identifiers, function names, variables, type names, file paths.
+- **Commit messages stay English** (Conventional Commits format).
+- **Error messages, log lines, security warnings**: quote verbatim, do not translate.
+- **User-facing prose**: bilingual — primary language = user's language (Vietnamese), secondary = English. For non-trivial explanations include both. For short acknowledgments single-language is fine.
+- Mix code + comment is OK; code stays EN, comments may be user-language if user clearly prefers.
+- Skill content (SKILL.md, references/) stays English so they remain shareable across users.
 
 ### Tenet 6 — Iron Law of secrets
 - Never read, log, paste, or commit `.env`, tokens, API keys, session cookies, JWTs, private keys.
@@ -60,15 +63,28 @@ These rules apply to **every** agent regardless of role. Violating them is heres
 - Before recommending a file/function/flag from memory: verify it exists now (Read / grep).
 - Memory ≠ ground truth, only a hint.
 
+### Tenet 11 — Retry guard
+- Any retry inside `/ticket-pipeline` (chapter-master after lint/typecheck fail, tech-priest after test fail) **must** be preceded by a call to `bash scripts/check-iter.sh "<ticket-id>" "<step>" "<cap>"`.
+- Paste the guard's stdout/stderr verbatim in the response — this is the evidence the guard ran.
+- Non-zero exit code = HALT. Do not retry, do not invoke the agent again, do not "just try once more". Hand back to user with the cap-hit message.
+- Skipping the guard call is a Tenet violation, equivalent to bypassing a stop-point. The guard exists because text-only "max N iterations" is unenforceable; the script is the enforcement.
+- State file at `.imperium/runs/<ticket-id>/state.json` survives across turns. Reset only via `bash scripts/check-iter.sh --reset <ticket-id>` and only with explicit user instruction.
+
 ---
 
 ## II. Pipeline Hand-off Contract
 
-The 6-step ticket-pipeline is one chain. Each agent **must** consume the previous agent's structured output and **must** produce its own structured output for the next.
+The ticket-pipeline runs as **4 blocks** (lean, Option A). Inside a block, agents auto-chain; **between blocks, user gates** with explicit STOP. Each agent must consume the previous agent's structured output and produce its own structured output for the next.
 
 ```
-librarian → inquisitor → techmarine → chapter-master → apothecary → tech-priest
-[analyze]   [cause]      [plan]        [implement]      [impact]      [test]
+Block 1 ANALYZE      librarian → inquisitor → techmarine
+                     ─── STOP 1: user approves approach ───
+Block 2 IMPLEMENT    chapter-master   (retry guarded by check-iter.sh)
+                     ─── STOP 2: user reviews diff ───
+Block 3 GATE         apothecary → dark-angels
+                     ─── STOP 3: user confirms before test ───
+Block 4 TEST         tech-priest      (retry guarded by check-iter.sh)
+                     ─── STOP 4: pipeline ends — manual commit/PR/close ───
 ```
 
 ### Hand-off shapes
@@ -79,8 +95,9 @@ librarian → inquisitor → techmarine → chapter-master → apothecary → te
 | inquisitor → techmarine | + `root-cause`, `evidence-chain`, `confidence`, `suspect-files` |
 | techmarine → chapter-master | + `approach` (1 or 2), `affected-files`, `edge-cases`, `test-prep`, `recommendation` |
 | chapter-master → apothecary | + `diff-summary`, `files-changed`, `lint/typecheck-status` |
-| apothecary → tech-priest | + `blast-radius`, `regression-list`, `rollback-plan`, `risk-level` |
-| tech-priest → user | + `tool-used`, `pass/fail`, `evidence-paths` |
+| apothecary → dark-angels | + `blast-radius`, `regression-list`, `rollback-plan`, `risk-level` |
+| dark-angels → tech-priest | + `findings` (severity + file:line), `recommendation` (clean/needs-fix/HALT) |
+| tech-priest → user | + `tool-used`, `pass/fail`, `evidence-paths`, `iteration-count` |
 
 ### Stop-points (mandatory user check)
 

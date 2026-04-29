@@ -1,10 +1,11 @@
 {
-  "_comment": "External skills with confirmed upstream repos. Cloned by install.sh to ~/.agents/skills/<name>, symlinked to ~/.claude/skills/<name>, updated by update.sh (git pull). Other skills are bundled directly inside plugins/ultramarines/skills/.",
+  "_comment": "External skills with confirmed upstream repos. Cloned by install.sh to ~/.agents/skills/.repos/<name> at a pinned commit, then the subdir is symlinked to ~/.agents/skills/<name> and to ~/.claude/skills/<name>. update.sh respects the pinned commit (NO auto-pull). To advance pins to upstream HEAD, run: ./scripts/update.sh --bump",
   "skills": [
     {
       "name": "agent-device",
       "repo": "git@github.com:callstackincubator/agent-device.git",
       "subdir": "skills/agent-device",
+      "commit": "a9e8d902dd613c7fdb3af5ae403f20e9fd25aaf8",
       "category": "test",
       "enabled": true
     },
@@ -12,6 +13,7 @@
       "name": "react-devtools",
       "repo": "git@github.com:callstackincubator/agent-react-devtools.git",
       "subdir": "packages/agent-react-devtools/skills/react-devtools",
+      "commit": "f22798bcb0510d312cc6f86762135a0e82d2819b",
       "category": "debug",
       "enabled": true
     },
@@ -19,6 +21,7 @@
       "name": "agent-browser",
       "repo": "git@github.com:vercel-labs/agent-browser.git",
       "subdir": "skills/agent-browser",
+      "commit": "57405f93614fae46e5c955ce662b4785283e1301",
       "category": "test",
       "enabled": true
     }
