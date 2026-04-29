@@ -76,6 +76,7 @@ Auto-fallback: Maestro fail → agent-device manual repro.
 - **Apothecary** = regression assessor (medic, knows where the body bleeds)
 - **Inquisitor** = root cause hunter (interrogates code)
 - **Dark Angels** = security review (sworn secret hunters of heresy)
+- **Astropath** = external research (psyker who casts thought across the warp — fetches lib docs, vendor changelog, GitHub issues with cited evidence)
 
 Planned chapters (see [`ROADMAP.md`](./ROADMAP.md)) — to be scaffolded when concrete need arises.
 

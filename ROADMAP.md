@@ -47,3 +47,5 @@ Add a chapter when a real workflow gap is identified. Scaffold = new `plugins/ul
 - Apr 2026 — Lean pipeline (Option A) — 4 blocks with explicit STOP between (analyze / impl / gate / test)
 - Apr 2026 — Iteration cap **enforced** via `scripts/check-iter.sh` + Codex Tenet 11 (state file at `.imperium/runs/<ticket-id>/state.json`, hard exit on cap)
 - Apr 2026 — Per-run artifact log (`.imperium/runs/<ticket-id>/log.md`) auto-written by retry guard
+- Apr 2026 — `astropath` skill + agent (external research with cited evidence — Tier 1-7 source ladder, Context7 MCP integration, `gh` CLI patterns) + Codex Tenet 12 external-research discipline
+- Apr 2026 — librarian / inquisitor / techmarine reference astropath as on-demand research helper

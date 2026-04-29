@@ -1,9 +1,9 @@
 {
   "name": "ultramarines",
-  "description": "Codex Astartes for coding. Disciplined ticket-pipeline (analyze -> cause -> fix-plan -> implement -> impact -> test) with themed agents, bundled ticket-* skills, and mobile testing (maestro, dogfood, agent-device).",
-  "version": "0.2.0",
+  "description": "Codex Astartes for coding. Lean 4-block ticket-pipeline (analyze→implement→gate→test) with retry guard, security review (dark-angels), and external research (astropath). Bundled ticket-* skills, mobile testing (maestro, dogfood, agent-device).",
+  "version": "0.3.0",
   "author": {
     "name": "TruongBach"
   },
-  "keywords": ["ticket", "jira", "workflow", "pipeline", "warhammer40k", "maestro", "mobile", "e2e", "testing"]
+  "keywords": ["ticket", "jira", "workflow", "pipeline", "warhammer40k", "maestro", "mobile", "e2e", "testing", "security", "research", "context7"]
 }

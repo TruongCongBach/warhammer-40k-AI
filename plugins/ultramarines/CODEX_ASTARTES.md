@@ -70,6 +70,15 @@ These rules apply to **every** agent regardless of role. Violating them is heres
 - Skipping the guard call is a Tenet violation, equivalent to bypassing a stop-point. The guard exists because text-only "max N iterations" is unenforceable; the script is the enforcement.
 - State file at `.imperium/runs/<ticket-id>/state.json` survives across turns. Reset only via `bash scripts/check-iter.sh --reset <ticket-id>` and only with explicit user instruction.
 
+### Tenet 12 — External research discipline
+- Any external fact (library version, API behavior, vendor changelog, RFC, error message lookup, GitHub issue state) **must** be obtained via skill `astropath` — never paraphrased from training memory.
+- Cite every external fact with: source URL + accessed date + verbatim excerpt + confidence label (`high`/`medium`/`low`). Format: `[via skill: astropath]` block.
+- **Distrust principle** — web info can be outdated or wrong. For high-stakes claims (breaking change, deprecation, security boundary): two-source rule (verify in 2 independent sources). Single source = `low` confidence regardless of authority.
+- **Verbatim excerpts** — quote sources exactly, do not paraphrase. Paraphrasing loses precision and breaks audit trail.
+- **No hallucinated URL** — never invent a URL pattern. If you don't know the URL, search for it.
+- **NOT FOUND is valid** — when the source ladder yields no conclusive answer, state `NOT FOUND` explicitly. Never fabricate to fill the gap.
+- Caller agents (librarian, inquisitor, techmarine, chapter-master) must preserve astropath's citation block in their own output — do NOT strip URLs/dates when summarizing.
+
 ---
 
 ## II. Pipeline Hand-off Contract
