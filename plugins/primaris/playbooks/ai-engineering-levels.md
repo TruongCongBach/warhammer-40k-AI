@@ -144,5 +144,5 @@ A level is **claimed** when the engineer hits ≥80% of the capability checklist
 
 1. Read the current level from `playbooks/bach-growth-plan.md`.
 2. For the period under review, count signals and anti-signals across the run logs and git history.
-3. Score: stable / rising / falling. Movement is *rising* only when ≥3 signals for the next level appear in the window with no anti-signal in the same window.
+3. Score: stable / rising / falling. Movement is *rising* only when ≥3 signals for the next level appear across at least 4 distinct work sessions in the window, with no anti-signal in the same window.
 4. Recommendations target the gap between current capabilities and the next-level capability checklist.

@@ -157,7 +157,7 @@ Full report: plugins/primaris/eval/<filename>
 - **No fabrication.** `NOT FOUND` is a valid output for missing inputs.
 - **No flattery.** A clean run gets a one-line "Metrics within target. No movement to report." — not a paragraph of praise.
 - **Imperative recommendations only.** "Consider X" is forbidden. "Do X next ticket" is required.
-- **Movement = rising only when the rubric agrees.** Three Level-N+1 signals with zero anti-signals in the same window. Otherwise = stable.
+- **Movement = rising only when the rubric agrees.** Three Level-N+1 signals across at least four distinct work sessions, with zero anti-signals in the same window. Otherwise = stable.
 
 ## Tools allowed
 
