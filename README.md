@@ -10,7 +10,9 @@ Personal Claude Code marketplace + plugins. Warhammer 40k themed agent-coding se
 imperium-of-guilliman (marketplace)
 ├── ultramarines        # main plugin: ticket-pipeline agents + ticket-* skills + commands
 │                       #   bound by plugins/ultramarines/CODEX_ASTARTES.md
-└── adeptus-mechanicus  # MCP plugin: jira / newrelic / notebooklm (env-driven)
+├── adeptus-mechanicus  # MCP plugin: jira / newrelic / notebooklm (env-driven)
+└── primaris            # meta-analyst plugin: Cawl-led scoring against AI Engineering Levels rubric
+                        #   Run `/level-check 7d` for weekly milestone read-out. Phase 1 of 4.
 ```
 
 **Codex Astartes** = `plugins/ultramarines/CODEX_ASTARTES.md`. Universal tenets all agents follow + per-agent oaths + pipeline hand-off contract + stop-points. Read it before tweaking any agent.
