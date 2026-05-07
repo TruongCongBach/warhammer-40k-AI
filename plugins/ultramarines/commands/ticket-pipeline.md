@@ -146,6 +146,28 @@ Pipeline complete. **Do NOT commit, do NOT push, do NOT open PR.**
 State file: .imperium/runs/<ticket-id>/state.json (kept for resume)
 ```
 
+#### Optional auto-fire — Cawl meta-eval
+
+If the `primaris` plugin is installed, auto-invoke Cawl to score this run and write a per-ticket eval report.
+
+**Existence check (graceful)**:
+
+```bash
+test -d plugins/primaris/agents && test -f plugins/primaris/agents/cawl.md && echo CAWL_AVAILABLE || echo CAWL_SKIP
+```
+
+If `CAWL_AVAILABLE`:
+
+- Invoke `Task(subagent_type="primaris:cawl", ticket_id="$TICKET")`.
+- Append the returned report path to the pipeline output: `Eval report: plugins/primaris/eval/<filename>`.
+
+If `CAWL_SKIP`:
+
+- Print one-line note: `primaris plugin not installed — skipping Cawl meta-eval.`
+- Continue without error.
+
+This step is non-blocking. Failures (Cawl crash, missing playbook) print a single warning line and do not affect pipeline status.
+
 ---
 
 ## Final summary table
