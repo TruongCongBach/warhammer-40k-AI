@@ -22,6 +22,12 @@
       "description": "Machine cult. MCP server config (jira, newrelic, notebooklm) sourced from environment variables. Disable when offline.",
       "source": "./plugins/adeptus-mechanicus",
       "category": "mcp"
+    },
+    {
+      "name": "primaris",
+      "description": "Personal AI Engineering OS. Cawl-led meta-layer that scores Bach's work against an explicit growth rubric, surfaces strengths and weaknesses, and recommends the next milestone. 7-tenet doctrine + 3 playbooks + /level-check command. Phase 1 of 4 (doctrine + meta loop only).",
+      "source": "./plugins/primaris",
+      "category": "evaluation"
     }
   ]
 }
