@@ -1,5 +1,5 @@
 ---
-description: "Score Bach's recent engineering work against the Primaris growth rubric. Aggregates eval reports, run artifacts, and git history into a Level Check via the cawl agent. Manual entry point — non-destructive, read-only."
+description: "Score the engineer's recent work against the Primaris growth rubric. Reads Claude Code /insights report (~/.claude/usage-data/report.html) plus optional ticket-pipeline run artifacts and prior eval reports. Manual entry point — non-destructive, read-only."
 argument-hint: "[period | ticket-id]"
 allowed-tools: ["Agent", "Read", "Bash", "Write", "Grep"]
 ---
