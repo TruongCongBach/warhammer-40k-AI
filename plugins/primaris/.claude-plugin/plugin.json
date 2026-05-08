@@ -1,9 +1,9 @@
 {
   "name": "primaris",
-  "description": "Personal AI Engineering OS. Meta-layer that observes Bach's work across tickets and scores it against an explicit growth rubric. Doctrine (7 tenets) + 3 playbooks + cawl analyst agent + /level-check command. Phase 1 of 4.",
-  "version": "0.1.0",
+  "description": "Personal AI Engineering OS. Cawl-led meta-layer that scores any Claude Code engineer's work against an explicit growth rubric, sourced from the /insights report. 7-tenet doctrine + 3 playbooks + /level-check command. User-data lives in $PRIMARIS_HOME (default ~/.primaris). Phase 1.5 of 4.",
+  "version": "0.2.0",
   "author": {
     "name": "TruongBach"
   },
-  "keywords": ["meta", "growth", "personal-os", "evaluation", "warhammer40k", "primaris", "cawl"]
+  "keywords": ["meta", "growth", "personal-os", "evaluation", "warhammer40k", "primaris", "cawl", "insights"]
 }
