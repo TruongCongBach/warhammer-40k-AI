@@ -10,7 +10,7 @@ Run a Level Check via the `cawl` agent. Defaults to the last 30 days when no arg
 
 > **Doctrine**: Cawl is bound by `plugins/primaris/PRIMARIS_DOCTRINE.md`. Read once before tweaking command behaviour.
 
-> **Read-only**: this command never modifies code, never commits, never pushes. It writes one new file under `plugins/primaris/eval/`.
+> **Read-only**: this command never modifies code, never commits, never pushes. It writes one new file under `$PRIMARIS_HOME/eval/` (default `~/.primaris/eval/`).
 
 ## Input
 

@@ -48,7 +48,7 @@ Default to orchestration: parallel sub-agents for independent work, verifier age
 
 Cawl observes after every ticket and at every weekly `/level-check`. The reports are read, not archived. Ignored reports = a violation of this tenet, equivalent to running without instrumentation.
 
-See `playbooks/bach-growth-plan.md` for current targets and `playbooks/ai-engineering-levels.md` for the level rubric.
+See `$PRIMARIS_HOME/growth-plan.md` (default `~/.primaris/growth-plan.md`) for current targets and `playbooks/ai-engineering-levels.md` for the level rubric.
 
 ---
 
