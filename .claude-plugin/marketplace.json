@@ -25,7 +25,7 @@
     },
     {
       "name": "primaris",
-      "description": "Personal AI Engineering OS. Cawl-led meta-layer that scores Bach's work against an explicit growth rubric, surfaces strengths and weaknesses, and recommends the next milestone. 7-tenet doctrine + 3 playbooks + /level-check command. Phase 1 of 4 (doctrine + meta loop only).",
+      "description": "Personal AI Engineering OS. Cawl-led meta-layer that scores any Claude Code engineer's work against an explicit growth rubric, sourced from the /insights report. Surfaces strengths, anti-signals, and the next milestone via /level-check. User-data in $PRIMARIS_HOME (default ~/.primaris/). Phase 1.5 of 4.",
       "source": "./plugins/primaris",
       "category": "evaluation"
     }
