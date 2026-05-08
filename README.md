@@ -11,8 +11,9 @@ imperium-of-guilliman (marketplace)
 ├── ultramarines        # main plugin: ticket-pipeline agents + ticket-* skills + commands
 │                       #   bound by plugins/ultramarines/CODEX_ASTARTES.md
 ├── adeptus-mechanicus  # MCP plugin: jira / newrelic / notebooklm (env-driven)
-└── primaris            # meta-analyst plugin: Cawl-led scoring against AI Engineering Levels rubric
-                        #   Run `/level-check 7d` for weekly milestone read-out. Phase 1 of 4.
+└── primaris            # personal AI Engineering OS. Cawl-led scoring against AI Engineering Levels rubric,
+                        #   sourced from /insights. Run `/level-check 7d` for weekly milestone read-out.
+                        #   User-data in $PRIMARIS_HOME (default ~/.primaris/). Phase 1.5 of 4.
 ```
 
 **Codex Astartes** = `plugins/ultramarines/CODEX_ASTARTES.md`. Universal tenets all agents follow + per-agent oaths + pipeline hand-off contract + stop-points. Read it before tweaking any agent.
