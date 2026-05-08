@@ -3,14 +3,14 @@
 > *"The flesh is weak. The mind is unproven. Both can be made stronger — by record, by trial, by patient revision."*
 > — Belisarius Cawl, Archmagos Dominus, Forge of Mars
 
-The doctrine that guides **Bach's personal engineering growth** across tickets. Read this before invoking the `cawl` agent, modifying a playbook, or interpreting a `/level-check` report.
+The doctrine that guides **the engineer's personal engineering growth** across tickets. Read this before invoking the `cawl` agent, modifying a playbook, or interpreting a `/level-check` report.
 
 ## Boundary with the Codex Astartes
 
 | File | Scope | Audience |
 |---|---|---|
 | `plugins/ultramarines/CODEX_ASTARTES.md` | **Pipeline rule** — how an agent behaves *inside* a ticket run | Every Ultramarines agent |
-| `plugins/primaris/PRIMARIS_DOCTRINE.md` | **Personal growth rule** — how Bach grows *across* tickets | Cawl + Bach |
+| `plugins/primaris/PRIMARIS_DOCTRINE.md` | **Personal growth rule** — how the engineer grows *across* tickets | Cawl + the engineer |
 
 The two doctrines do not overlap. Codex governs ticket execution. Primaris governs the meta-loop that observes ticket execution and turns it into measurable progress.
 
