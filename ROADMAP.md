@@ -39,6 +39,7 @@ Add a chapter when a real workflow gap is identified. Scaffold = new `plugins/ul
 
 ## Done (recent)
 
+- May 2026 — `primaris` v0.2.0 (Phase 1.5 — generic + `/insights`-driven). Cawl reads `~/.claude/usage-data/report.html` as primary input. User-data relocates to `$PRIMARIS_HOME` (default `~/.primaris/`). `growth-plan.template.md` ships in plugin; `bach-growth-plan.md` removed. Levels rubric gains per-level `Roadmap to Level N+1` subsections. Doctrine + README + manifest de-Bach. v0.1.0 install upgrade path: copy template → fill → run `/insights` → run `/level-check 7d`.
 - May 2026 — `primaris` plugin Phase 1 (doctrine + meta loop). 7-tenet `PRIMARIS_DOCTRINE.md`, 3 playbooks (`ai-engineering-levels.md`, `bach-growth-plan.md`, `prime-directive.md`), `cawl` meta-analyst agent, `/level-check` command. Auto-fires after `/ticket-pipeline` Block 4 (graceful skip if not installed). Phase 2 (Prime Directive enforcement) next.
 - Apr 2026 — `maestro` skill bundled (mobile E2E authoring with selectors/CI/GraalJS references + flow templates)
 - Apr 2026 — `dark-angels` security review agent (Tier 1-6 threat model, halts pipeline on critical/high)
